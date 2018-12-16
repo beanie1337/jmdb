@@ -10,7 +10,7 @@ export const doCreateUser = (id, username, email, permission) =>
   });
 
 export const getMovieCommentsRef = (selectedMovieId) =>
-  db.ref(`movies/${selectedMovieId}/comments`)
+  db.ref(`comments/${selectedMovieId}`)
 
 export const getUserInformation = (uid) => 
   db.ref('users').child(uid).once('value');
@@ -27,31 +27,39 @@ export const movieRef = () =>
 export const getWatchList = (uid) => 
    db.ref(`users/${uid}/watchList`).once('value')
 
+// export const saveMovieSuggestion = (selected, rating, user) => {
+//     // var date = new Date();
+//     return db.ref(`comments/${selected.id}/${parseInt(Date.now())}`).set({
+//       addedByUser:user.username,
+//       addedByUserDate:parseInt(Date.now()),
+//       comment:"LOL"
+//     });
+// }
+
 export const saveMovieSuggestion = (selected, rating, user) => {
-    // var date = new Date();
-    return db.ref(`movies/${selected.id}`).set({
-      addedByUser:user.username,
-      addedByUserDate:parseInt(Date.now()),
-      addedByUserRating:rating,
-      adult: selected.adult,
-      vote_count: selected.vote_count,
-      id: selected.id,
-      video: selected.video,
-      vote_average: selected.vote_average,
-      title: selected.title,
-      popularity: selected.popularity,
-      poster_path: selected.poster_path,
-      original_language: selected.original_language,
-      genres: selected.genres,
-      backdrop_path: selected.backdrop_path,
-      overview: selected.overview,
-      release_date: selected.release_date,
-      budget: selected.budget,
-      imdb_id: selected.imdb_id,
-      revenue: selected.revenue,
-      tagline: selected.tagline,
-      runtime: selected.runtime
-    });
+  return db.ref(`movies/${selected.id}`).set({
+    addedByUser:user.username,
+    addedByUserDate:parseInt(Date.now()),
+    addedByUserRating:rating,
+    adult: selected.adult,
+    vote_count: selected.vote_count,
+    id: selected.id,
+    video: selected.video,
+    vote_average: selected.vote_average,
+    title: selected.title,
+    popularity: selected.popularity,
+    poster_path: selected.poster_path,
+    original_language: selected.original_language,
+    genres: selected.genres,
+    backdrop_path: selected.backdrop_path,
+    overview: selected.overview,
+    release_date: selected.release_date,
+    budget: selected.budget,
+    imdb_id: selected.imdb_id,
+    revenue: selected.revenue,
+    tagline: selected.tagline,
+    runtime: selected.runtime
+  });
 }
 
 export const removeMovieFromWatchList = (uid, key, id) => {

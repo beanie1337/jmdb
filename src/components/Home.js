@@ -190,6 +190,7 @@ class MovieCardMinimized extends Component {
 
                 
                 <a id={"addToWatch"+movie.id} href="#" className="addToWatchList" onClick={(e) => {e.stopPropagation();this.addToWatchList(movie)}}><TiEye size={24}/></a>
+                
                 <MovieCommentsDialog movie={movie}/>
 
                 {/* <Tooltip placement="right" isOpen={this.state.tooltipOpen} target={"commentMovie"+movie.id} toggle={this.toggleTooltip}>
@@ -209,18 +210,28 @@ class MovieCommentsDialog extends Component {
         super(props);
         this.state = {
             modal:false,
-            value: '', suggestions: [], 
+            value: '', 
+            suggestions: [], 
             selection: null,
-            rating: 1
+            rating: 1,
+            movieComments: ''
         }
 
         this.toggle = this.toggle.bind(this);
         this.save = this.save.bind(this);
         this.cancel = this.cancel.bind(this);
     }
-    openComments(selectedMovie) {
-        var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
-        db.saveMovieComment(userInfo.uid, selectedMovie)
+    componentWillMount() {
+        
+    }
+
+    openComments(movie) {
+        const commentsRef = db.getMovieCommentsRef(movie.id);
+        commentsRef.once('value').then((snapshot) => {
+            this.setState({
+                movieComments:snapshot.val()
+            })
+        })
     }
     // onChange = (event, { newValue, method }) => {
     //     this.setState({ value: newValue });
@@ -249,14 +260,25 @@ class MovieCommentsDialog extends Component {
     };
     
     render() {
+        const {movieComments} = this.state;
         const movie = this.props.movie;
+        
         return(
             <div>
-                <a id={"commentMovie"+movie.id} href="#" className="movieCommentIcon" onClick={(e) => {e.stopPropagation();this.toggle()}}><GoCommentDiscussion size={24}/></a>
+                <a id={"commentMovie"+movie.id} href="#" className="movieCommentIcon" onClick={(e) => {e.stopPropagation();this.toggle();this.openComments(movie)}}><GoCommentDiscussion size={24}/></a>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Kommentarer om filmen '{movie.title}'</ModalHeader>
                     <ModalBody>
                         
+                            {Object.keys(movieComments).map((key, index) =>
+                                <div className="message">
+                                            <span className="message__author">
+                                                {movieComments[key].addedByUser}:
+                                            </span>
+                                    {movieComments[key].comment}
+                                </div>
+                            )}
+                      
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={this.save}>Spara</Button>{' '}

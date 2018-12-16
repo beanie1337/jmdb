@@ -1,0 +1,259 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+body {
+  background-image: url("../img/background.png")
+}
+
+.mainContainer {
+  background-color:white;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Movie list styles */
+.linkMovieHeading:link {
+    color: black;
+    text-decoration: none;
+}
+.linkMovieHeading:active {
+  color: black;
+  text-decoration: none;
+}
+.linkMovieHeading:hover {
+  color: black;
+  text-decoration: underline;
+}
+.linkMovieHeading:visited {
+  color: black;
+}
+.movieListUl {
+  /* Remove default list styling */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.movieListUl li {
+  margin-bottom: 10px;
+}
+.showMore {
+  position: absolute; 
+  left: 0;
+  width: 100%; 
+  text-align: center; 
+  margin: 0; 
+  padding: 40px 0; 
+  color:lightgray;
+}
+
+.showLess {
+  display: block; 
+  left: 0;
+  width: 100%; 
+  text-align: center; 
+  margin: 0; 
+  color:lightgray;
+}
+
+.movieCommentIcon {
+  position: absolute;
+  right:50px;
+  color:gray;
+  top:25px;
+}
+
+.addToWatchList {
+  position: absolute;
+  right:20px;
+  color:#218838;
+  top:25px;
+}
+
+.deleteWatchListMovie {
+  color:darkred;
+}
+
+.card-body {
+  padding:0px !important;
+  border-top: 1px solid lightgray;
+}
+
+.card-body .media {
+  margin-top: 10px;
+}
+
+.card-body .media .media-left {
+  border: 1px solid lightgray;
+  border-top-left-radius:"5px";
+  border-bottom-left-radius:"5px";
+}
+
+.moviePoster {
+  width: 120px;
+}
+
+.movieTitleSpan {
+  margin-left:10px;
+  font-weight: 300;
+  font-size: 28px;
+  margin-bottom:0px;
+}
+
+.movieAddedBy {
+  margin-left:10px;
+  color:gray !important;
+}
+
+.moviePreInfo {
+  margin-top:5px;
+}
+
+.movieCard {
+  border:0 !important;
+  border-top: 1px solid lightgray;
+  padding:5px;
+}
+
+.movieReleaseDate {
+  color:gray;
+}
+
+.movieListContainer .list-group-item {
+  padding: 0px !important;
+  margin-bottom: 10px !important;
+  border-radius: 4px !important;
+}
+
+/* MOVIE COMMENTS CSS */
+.message {
+  position: relative;
+  padding: 10px 60px 10px 20px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, .05);
+  text-align: left;
+  line-height: 1.7;
+}
+
+.message:nth-child(even) {
+  background-color: rgba(0, 0, 0, .025);
+}
+
+.message__author {
+  font-weight: 600;
+  margin-right: 10px;
+  color: rgba(0, 0, 0, 1);
+}
+
+
+/* REACT AUTOSUGGESTION STYLES */
+.react-autosuggest__container {
+  position: relative;
+}
+
+.react-autosuggest__input {
+  width: 465px;
+  height: 40px;
+  padding: 10px 20px;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.react-autosuggest__input:focus {
+  outline: none;
+}
+
+.react-autosuggest__container--open .react-autosuggest__input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.react-autosuggest__suggestions-container {
+  display: none;
+}
+
+.react-autosuggest__container--open .react-autosuggest__suggestions-container {
+  display: block;
+  position: absolute;
+  top: 51px;
+  width: 380px;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 2;
+}
+
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+.react-autosuggest__suggestion:not(:first-child) {
+  border-top: 1px solid #ddd;
+}
+
+.react-autosuggest__suggestion--focused {
+  background-color: #0C7EAF;
+  color: #fff;
+}
+
+.suggestion-content {
+  display: flex;
+  align-items: center;
+  background-repeat: no-repeat;
+}
+
+.name {
+  margin-left: 68px;
+  line-height: 45px;
+}
+
+.highlight {
+  color: #ee0000;
+  font-weight: bold;
+}
+
+.react-autosuggest__suggestion--focused .highlight {
+  color: #120000;
+}

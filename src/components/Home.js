@@ -170,7 +170,25 @@ class MovieCardMinimized extends Component {
     addToWatchList(selectedMovie) {
         //console.log(selectedMovie)
         var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
-        db.saveMovieToWatchList(userInfo.uid, selectedMovie)
+        var movieExists = false;
+        db.getWatchList(userInfo.uid).then(snapshot => {
+            if (snapshot.val() != null) {
+                var matchingKey = Object.keys(snapshot.val()).find(key => snapshot.val()[key].id == selectedMovie.id);
+                
+                if (matchingKey == null) {
+                    db.saveMovieToWatchList(userInfo.uid, selectedMovie)
+                    alert("Filmen har lagts till i din watchlist!");
+                }
+                else if (matchingKey.length > 0) {
+                    alert("Filmen finns redan i din watchlist!");
+                }
+            }
+            else {
+                db.saveMovieToWatchList(userInfo.uid, selectedMovie)
+                alert("Filmen har lagts till i din watchlist!");
+            }
+        });
+        
     }
     toggleTooltip() {
         this.setState({
@@ -214,14 +232,14 @@ class MovieCommentsDialog extends Component {
             suggestions: [], 
             selection: null,
             rating: 1,
-            movieComments: ''
+            movieComments: '',
         }
 
         this.toggle = this.toggle.bind(this);
         this.save = this.save.bind(this);
         this.cancel = this.cancel.bind(this);
     }
-    componentWillMount() {
+    componentDidMount() {
         
     }
 

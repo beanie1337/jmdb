@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input} from 'reactstrap'
+import {Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input, Alert} from 'reactstrap'
 import {TiStar} from 'react-icons/ti';
 import Autosuggest from "react-autosuggest";
 import StarRatingComponent from 'react-star-rating-component';
@@ -13,7 +13,8 @@ class AddNewMovieDialog extends Component {
             value: '', suggestions: [], 
             selection: null,
             user: firebase.auth.currentUser,
-            rating: 1
+            rating: 1,
+            successMessage: false
         }
 
         this.toggle = this.toggle.bind(this);
@@ -26,7 +27,7 @@ class AddNewMovieDialog extends Component {
     }
       
     onSuggestionsFetchRequested = ({ value }) => {
-        if (value.length > 3) {
+        if (value.length > 2) {
         //Search movies by users input
         fetch(`https://api.themoviedb.org/3/search/movie?api_key=a914495401933729d2471d53da4512bf&query=${value}`)
         .then(response => response.json())
@@ -55,7 +56,7 @@ class AddNewMovieDialog extends Component {
         var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
         db.saveMovieSuggestion(this.state.selection, this.state.rating, userInfo).then(() => {
             this.setState({
-                modal: false
+                successMessage: true
             });
         });
     }
@@ -93,6 +94,11 @@ class AddNewMovieDialog extends Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Lägg till filmtips</ModalHeader>
                     <ModalBody>
+                        {!!this.state.successMessage &&
+                            <Alert color="success">
+                                Filmtips tillagt!
+                            </Alert>
+                        }
                         <Label style={{fontStyle:"bold"}}>Sök på filmtitel (hämtas från themoviedb.org)</Label>
                         <Autosuggest 
                             suggestions={suggestions}

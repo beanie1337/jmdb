@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { db } from '../firebase';
 import withAuthorization from './withAuthorization';
-import {Container, Col, Row, Media, Button, Collapse, Card, CardBody, ListGroupItem, Tooltip, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup} from 'reactstrap';
-import {TiDelete, TiEye, TiMessageTyping} from 'react-icons/ti';
+import {Alert, Container, Col, Row, Media, Button, Collapse, Card, CardBody, ListGroupItem, Tooltip, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Form, FormGroup, Label, Input} from 'reactstrap';
+import {TiDelete, TiEye, TiThumbsUp, TiWeatherSnow} from 'react-icons/ti';
 import {GoCommentDiscussion} from 'react-icons/go';
 import AddNewMovieDialog from './Movies';
 import {Loader} from './Loading';
+import HotIcon from '../img/hot.png';
 
 class HomePage extends Component {
     constructor(props) {
@@ -170,7 +171,7 @@ class MovieCardMinimized extends Component {
     addToWatchList(selectedMovie) {
         //console.log(selectedMovie)
         var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
-        var movieExists = false;
+        
         db.getWatchList(userInfo.uid).then(snapshot => {
             if (snapshot.val() != null) {
                 var matchingKey = Object.keys(snapshot.val()).find(key => snapshot.val()[key].id == selectedMovie.id);
@@ -200,13 +201,14 @@ class MovieCardMinimized extends Component {
         return(
             <div>
                 <div className="moviePreInfo">
-                    <h4 className="movieTitleSpan">{movie.title} <span style={{color:"gray", fontSize:"16px"}}>- ({movie.release_date})</span></h4> 
+                    <h4 className="movieTitleSpan">{movie.title} <span style={{color:"gray", fontSize:"16px"}}> ({movie.release_date})</span></h4> 
                     <span className="movieAddedBy badge badge-light">Tillagd av: {movie.addedByUser}</span>
                     <span className="movieAddedBy badge badge-light">Tillagd datum: {new Date(movie.addedByUserDate).toLocaleDateString()}</span>
-                    <span className="movieAddedBy badge badge-light">{movie.addedByUser}'s rating: {movie.addedByUserRating}/10</span>
+                    <span className="movieAddedBy badge badge-light">{movie.addedByUser}'s rating: <UserRating movieRating={movie.addedByUserRating}/></span>
                 </div>
 
-                
+                <ThumbsUp movie={movie}/>
+
                 <a id={"addToWatch"+movie.id} href="#" className="addToWatchList" onClick={(e) => {e.stopPropagation();this.addToWatchList(movie)}}><TiEye size={24}/></a>
                 
                 <MovieCommentsDialog movie={movie}/>
@@ -214,9 +216,46 @@ class MovieCardMinimized extends Component {
                 {/* <Tooltip placement="right" isOpen={this.state.tooltipOpen} target={"commentMovie"+movie.id} toggle={this.toggleTooltip}>
                                                         Lägg till en kommentar
                                                     </Tooltip> */}
-
-                <Tooltip placement="right" isOpen={this.state.tooltipOpen} target={"addToWatch"+movie.id} toggle={this.toggleTooltip}>
+               
+                <Tooltip placement="right" delay={0} isOpen={this.state.tooltipOpen} target={"addToWatch"+movie.id} toggle={this.toggleTooltip}>
                     Lägg till '{movie.title}' i din watchlist
+                </Tooltip>
+            </div>
+        )
+    }
+}
+
+class UserRating extends Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        var userRating = this.props.movieRating;
+        
+        return(
+            <span>{userRating}/10</span>
+        )
+    }
+}
+
+class ThumbsUp extends Component {
+    constructor(props) {
+        super(props);
+        this.toggleTooltip = this.toggleTooltip.bind(this);
+        this.state = { tooltipOpen: false };
+    }
+    toggleTooltip() {
+        this.setState({
+            tooltipOpen: !this.state.tooltipOpen
+        });
+    }
+    render(){
+        const movie = this.props.movie;
+        return(
+            <div>
+                <a id={"thumbsUp"+movie.id} href="#" className="thumbsUp" ><TiThumbsUp size={24}/></a>
+                <Tooltip placement="left" delay={0} isOpen={this.state.tooltipOpen} target={"thumbsUp"+movie.id} toggle={this.toggleTooltip}>
+                    Ge '{movie.title}' en tumme upp
                 </Tooltip>
             </div>
         )
@@ -233,8 +272,12 @@ class MovieCommentsDialog extends Component {
             selection: null,
             rating: 1,
             movieComments: '',
+            tooltipOpen: false,
+            userComment: '',
+            loader: true
         }
 
+        this.toggleTooltip = this.toggleTooltip.bind(this);    
         this.toggle = this.toggle.bind(this);
         this.save = this.save.bind(this);
         this.cancel = this.cancel.bind(this);
@@ -242,12 +285,17 @@ class MovieCommentsDialog extends Component {
     componentDidMount() {
         
     }
-
+    toggleTooltip() {
+        this.setState({
+            tooltipOpen: !this.state.tooltipOpen
+        });
+    }
     openComments(movie) {
         const commentsRef = db.getMovieCommentsRef(movie.id);
         commentsRef.once('value').then((snapshot) => {
             this.setState({
-                movieComments:snapshot.val()
+                movieComments:snapshot.val(),
+                loader:false
             })
         })
     }
@@ -255,52 +303,80 @@ class MovieCommentsDialog extends Component {
     //     this.setState({ value: newValue });
     // }
       
-    save = () => {
+    save(movie, comment) {
         //TODO: Loading spinner!!!!
         var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
-        db.saveMovieSuggestion(this.state.selection, this.state.rating, userInfo).then(() => {
+        db.saveMovieComment(movie.id, comment, userInfo).then(() => {
             this.setState({
-                modal: false
+                // modal: false,
+                successMessage: 'JARRÅ',
+                userComment: ''
             });
         });
     }
 
     cancel() {
         this.setState({
-            modal: !this.state.modal
+            modal: !this.state.modal,
+            successMessage: ''
         });
     }
 
     toggle() {
         this.setState({
-            modal: !this.state.modal
+            modal: !this.state.modal,
+            successMessage: ''
         });
     };
-    
+
+    updateInputValue(evt) {
+        this.setState({
+            userComment: evt.target.value
+        });
+    };
+
     render() {
         const {movieComments} = this.state;
         const movie = this.props.movie;
-        
+        var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
         return(
             <div>
+                <Tooltip placement="top" delay={0} isOpen={this.state.tooltipOpen} target={"commentMovie"+movie.id} toggle={this.toggleTooltip}>
+                    Kommentarer
+                </Tooltip>
                 <a id={"commentMovie"+movie.id} href="#" className="movieCommentIcon" onClick={(e) => {e.stopPropagation();this.toggle();this.openComments(movie)}}><GoCommentDiscussion size={24}/></a>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Kommentarer om filmen '{movie.title}'</ModalHeader>
                     <ModalBody>
-                        
-                            {Object.keys(movieComments).map((key, index) =>
-                                <div className="message">
-                                            <span className="message__author">
-                                                {movieComments[key].addedByUser}:
-                                            </span>
-                                    {movieComments[key].comment}
+                        {!!this.state.successMessage &&
+                            <Alert color="success">
+                                Kommentaren skickad!
+                            </Alert>
+                        }
+                        {this.state.loader ? <Loader /> : null }
+                        {movieComments ?
+                            Object.keys(movieComments).map((key, index) =>
+                                <div className="message" key={key}>
+                                    <span className="message__author">
+                                        <div className="userCommentDate">{new Date(movieComments[key].addedByUserDate).toLocaleDateString() + " " + new Date(movieComments[key].addedByUserDate).toLocaleTimeString()}</div>
+                                        <h6><Badge color="secondary">{movieComments[key].addedByUser}:</Badge></h6>
+                                    </span>
+                                    <span>
+                                        {movieComments[key].comment}
+                                    </span>
                                 </div>
-                            )}
-                      
+                            )
+                        : <span>Inga kommentarer</span>}
+                        <hr />
+                        <FormGroup>
+                            <Label>Skriv kommentar</Label><br></br>
+                            <Badge color="secondary">{userInfo.username}</Badge>
+                            <Input type="textarea" name="userComment" id="userComment" value={this.state.userComment} onChange={evt => this.updateInputValue(evt)} />
+                        </FormGroup>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.save}>Spara</Button>{' '}
-                        <Button color="danger" onClick={this.cancel}>Avbryt</Button>
+                        <Button color="success" className="saveCommentsButton" disabled={!this.state.userComment} onClick={() => {this.save(movie, this.state.userComment)}}>Spara</Button>
+                        <Button color="danger" onClick={this.cancel}>Stäng</Button>
                     </ModalFooter>
                 </Modal>
             </div>

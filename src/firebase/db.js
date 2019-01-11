@@ -27,14 +27,14 @@ export const movieRef = () =>
 export const getWatchList = (uid) => 
    db.ref(`users/${uid}/watchList`).once('value')
 
-// export const saveMovieSuggestion = (selected, rating, user) => {
-//     // var date = new Date();
-//     return db.ref(`comments/${selected.id}/${parseInt(Date.now())}`).set({
-//       addedByUser:user.username,
-//       addedByUserDate:parseInt(Date.now()),
-//       comment:"LOL"
-//     });
-// }
+export const saveMovieComment = (id, userComment, user) => {
+    // var date = new Date(); 
+    return db.ref(`comments/${id}/${parseInt(Date.now())}`).set({
+      addedByUser:user.username,
+      addedByUserDate:parseInt(Date.now()),
+      comment:userComment
+    });
+}
 
 export const saveMovieSuggestion = (selected, rating, user) => {
   return db.ref(`movies/${selected.id}`).set({

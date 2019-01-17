@@ -12,8 +12,8 @@ import {
   } from 'reactstrap';
 
 const SignInPage = ({ history }) =>
-  <div style={{position:"absolute"}}>
-    <h1>Logga in</h1>
+  <div>
+    <h3>Logga in</h3>
     <SignInForm history={history} />
     <div style={{marginLeft:"30px", marginTop:"20px"}}>
         <PasswordForgetLink />
@@ -79,6 +79,7 @@ class SignInForm extends Component {
       email === '';
 
     return (
+      <div className="SignInForm">
         <Container className="App">
             <Form className="form" onSubmit={this.onSubmit}>
             <Col>
@@ -111,6 +112,7 @@ class SignInForm extends Component {
             { error && <p style={{color:"red"}}>{error.message}</p> }
             </Form>
         </Container>
+        </div>
     );
   }
 }

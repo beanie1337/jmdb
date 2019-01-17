@@ -71,6 +71,8 @@ class WatchList extends Component {
     removeMovieFromWatchList(key, e) {
         var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
         db.removeMovieFromWatchList(userInfo.uid, key, e.currentTarget.id);
+        alert('Filmen borttagen från watchlist')
+        window.location.reload();
     }
     render() {
         var watchList = this.props.watchList;
@@ -179,6 +181,7 @@ class MovieCardMinimized extends Component {
                 if (matchingKey == null) {
                     db.saveMovieToWatchList(userInfo.uid, selectedMovie)
                     alert("Filmen har lagts till i din watchlist!");
+                    window.location.reload();
                 }
                 else if (matchingKey.length > 0) {
                     alert("Filmen finns redan i din watchlist!");
@@ -187,6 +190,7 @@ class MovieCardMinimized extends Component {
             else {
                 db.saveMovieToWatchList(userInfo.uid, selectedMovie)
                 alert("Filmen har lagts till i din watchlist!");
+                window.location.reload();
             }
         });
         
@@ -253,10 +257,10 @@ class ThumbsUp extends Component {
         const movie = this.props.movie;
         return(
             <div>
-                <a id={"thumbsUp"+movie.id} href="#" className="thumbsUp" ><TiThumbsUp size={24}/></a>
+                {/* <a id={"thumbsUp"+movie.id} href="#" className="thumbsUp" ><TiThumbsUp size={24}/></a>
                 <Tooltip placement="left" delay={0} isOpen={this.state.tooltipOpen} target={"thumbsUp"+movie.id} toggle={this.toggleTooltip}>
                     Ge '{movie.title}' en tumme upp
-                </Tooltip>
+                </Tooltip> */}
             </div>
         )
     }

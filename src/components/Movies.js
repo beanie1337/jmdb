@@ -76,7 +76,7 @@ class AddNewMovieDialog extends Component {
     render() {
         const { value, suggestions, selection } = this.state;
         const inputProps = {
-            placeholder: "Skriv minst 4 bokstäver",
+            placeholder: "Skriv minst 3 bokstäver",
             value,
             onChange: this.onChange
         };

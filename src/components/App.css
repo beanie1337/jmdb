@@ -39,6 +39,28 @@ body {
   }
 }
 
+/* SignIn form */
+.SignInForm  {
+  width:50%;
+  text-align: center;
+}
+
+.SignInForm label {
+  float:left;
+}
+
+/* SignUp form */
+
+.SignUpForm  {
+  width:50%;
+  text-align: center;
+}
+
+.SignUpForm label {
+  float: left;
+}
+
+
 /* Movie list styles */
 .linkMovieHeading:link {
     color: black;
@@ -134,6 +156,7 @@ body {
   border-top: 1px solid lightgray;
 }
 
+
 .card-body .media {
   margin-top: 10px;
 }
@@ -143,6 +166,7 @@ body {
   border-top-left-radius:"5px";
   border-bottom-left-radius:"5px";
 }
+
 
 .moviePoster {
   width: 120px;
@@ -168,6 +192,10 @@ body {
   border:0 !important;
   border-top: 1px solid lightgray;
   padding:5px;
+}
+
+.movieListContainer .media:hover {
+  cursor: pointer;
 }
 
 .movieReleaseDate {

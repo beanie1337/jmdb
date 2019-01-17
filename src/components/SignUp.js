@@ -14,7 +14,7 @@ import {
 
 const SignUpPage = ({history}) =>
   <div>
-    <h1>Registrera nytt konto</h1>
+    <h3>Registrera nytt konto</h3>
     <br />
     <SignUpForm history={history} />
   </div>
@@ -55,7 +55,8 @@ class SignUpForm extends Component {
         db.doCreateUser(authUser.user.uid, username, email, "reader")
             .then(() => {
                 this.setState({ ...INITIAL_STATE });
-                history.push(routes.HOME);
+                alert('Kontot är skapat. Var god logga in')
+                history.push(routes.SIGN_IN);
             })
             .catch(error => {
                 this.setState(byPropKey('error', error));
@@ -83,6 +84,7 @@ class SignUpForm extends Component {
       email === '' ||
       username === '';
     return (
+        <div className="SignUpForm">
         <Container className="App">
             <Form className="form" onSubmit={this.onSubmit}>
             <Col>
@@ -133,6 +135,7 @@ class SignUpForm extends Component {
             { error && <p style={{color:"red"}}>{error.message}</p> }
             </Form>
         </Container>
+        </div>
     //   <form onSubmit={this.onSubmit}>
     //     <input
     //       value={username}

@@ -54,11 +54,18 @@ class AddNewMovieDialog extends Component {
     save = () => {
         //TODO: Loading spinner!!!!
         var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
-        db.saveMovieSuggestion(this.state.selection, this.state.rating, userInfo).then(() => {
-            this.setState({
-                successMessage: true
-            });
-        });
+        db.getMovie(this.state.selection.id).then(snapshot => {
+            if (snapshot.val() == null) {
+                db.saveMovieSuggestion(this.state.selection, this.state.rating, userInfo).then(() => {
+                    this.setState({
+                        successMessage: true
+                    });
+                });
+            }
+            else {
+                alert('Filmen finns redan!')
+            }
+        })
     }
 
     cancel() {

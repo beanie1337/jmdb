@@ -135,6 +135,17 @@ class MoviesList extends Component {
                                     <Media>
                                         <Col>
                                             <Row>
+                                                {movie.genres.length > 1 ? 
+                                                    
+                                                        Object.keys(movie.genres).map(key =>
+                                                            <span className="movieGenres badge badge-secondary" key={key}>{movie.genres[key].name}</span>
+                                                        )
+                                                     : 
+                                                     <span className="movieGenres badge badge-secondary">{movie.genres[0].name}</span>
+                                                }
+                                                
+                                            </Row>
+                                            <Row>
                                                 <p style={{marginLeft:"10px", marginRight:"10px"}}>{movie.overview}</p>
                                             </Row>
                                             <Row>
@@ -168,7 +179,14 @@ class MovieCardMinimized extends Component {
     constructor(props) {
         super(props);
         this.toggleTooltip = this.toggleTooltip.bind(this);
-        this.state = { tooltipOpen: false };
+        this.state = { tooltipOpen: false,  movieCommentsCount: 0};
+    }
+    componentDidMount() {
+        db.getMovieComments(this.props.movie.id).then(snapshot => {
+            this.setState({
+                movieCommentsCount: Object.keys(snapshot.val()).length
+            })
+        })
     }
     addToWatchList(selectedMovie) {
         //console.log(selectedMovie)
@@ -195,6 +213,13 @@ class MovieCardMinimized extends Component {
         });
         
     }
+    // movieCommentsCount(id) {
+    //     db.getMovieComments(id).then(snapshot => {
+    //         this.setState({
+    //             movieCommentsCount: Object.keys(snapshot.val()).length
+    //         })
+    //     })
+    // }
     toggleTooltip() {
         this.setState({
             tooltipOpen: !this.state.tooltipOpen
@@ -202,6 +227,7 @@ class MovieCardMinimized extends Component {
     }
     render() {
         const movie = this.props.movie;
+        //this.movieCommentsCount(movie.id)
         return(
             <div>
                 <div className="moviePreInfo">
@@ -215,8 +241,8 @@ class MovieCardMinimized extends Component {
 
                 <a id={"addToWatch"+movie.id} href="#" className="addToWatchList" onClick={(e) => {e.stopPropagation();this.addToWatchList(movie)}}><TiEye size={24}/></a>
                 
-                <MovieCommentsDialog movie={movie}/>
-
+                <MovieCommentsDialog movie={movie} movieCommentsCount={this.state.movieCommentsCount}/>
+                
                 {/* <Tooltip placement="right" isOpen={this.state.tooltipOpen} target={"commentMovie"+movie.id} toggle={this.toggleTooltip}>
                                                         Lägg till en kommentar
                                                     </Tooltip> */}
@@ -349,6 +375,13 @@ class MovieCommentsDialog extends Component {
                     Kommentarer
                 </Tooltip>
                 <a id={"commentMovie"+movie.id} href="#" className="movieCommentIcon" onClick={(e) => {e.stopPropagation();this.toggle();this.openComments(movie)}}><GoCommentDiscussion size={24}/></a>
+                
+                {this.props.movieCommentsCount > 0 ? 
+                    <span className="movieCommentsCount">{this.props.movieCommentsCount}</span> 
+                    : 
+                    <span className="movieCommentsCountNone">{this.props.movieCommentsCount}</span>
+                }
+                
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Kommentarer om filmen '{movie.title}'</ModalHeader>
                     <ModalBody>

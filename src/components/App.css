@@ -23,7 +23,8 @@
 }
 
 body {
-  background-image: url("../img/background.png")
+  background-image: url("../img/background.png");
+  background-size:cover;
 }
 
 .mainContainer {
@@ -112,6 +113,26 @@ body {
   top:25px;
 }
 
+.movieCommentsCount {
+  position: absolute;
+  right:55px;
+  top:20px;
+  font-size: 13px;
+  background-color: white;
+  color:darkgreen;
+  font-weight: bold;
+}
+
+.movieCommentsCountNone {
+  position: absolute;
+  right:55px;
+  top:20px;
+  font-size: 13px;
+  background-color: white;
+  color:gray;
+  font-weight: bold;
+}
+
 .addToWatchList {
   position: absolute;
   right:20px;
@@ -167,6 +188,11 @@ body {
   border-bottom-left-radius:"5px";
 }
 
+.movieGenres {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  margin-right: 0px;
+}
 
 .moviePoster {
   width: 120px;

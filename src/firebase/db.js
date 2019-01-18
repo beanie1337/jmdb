@@ -1,7 +1,6 @@
 import { db } from './firebase';
 
-// User API
-
+// *********** User API ***********
 export const doCreateUser = (id, username, email, permission) =>
   db.ref(`users/${id}`).set({
     username,
@@ -9,8 +8,6 @@ export const doCreateUser = (id, username, email, permission) =>
     permission,
   });
 
-export const getMovieCommentsRef = (selectedMovieId) =>
-  db.ref(`comments/${selectedMovieId}`)
 
 export const getUserInformation = (uid) => 
   db.ref('users').child(uid).once('value');
@@ -18,14 +15,22 @@ export const getUserInformation = (uid) =>
 export const onceGetUsers = () =>
   db.ref('users').once('value');
 
+// *********** Movies ***********
+
+export const getMovieCommentsRef = (selectedMovieId) =>
+  db.ref(`comments/${selectedMovieId}`);
+
+export const getMovieComments = (selectedMovieId) =>
+  db.ref(`comments/${selectedMovieId}`).once('value');
+
+export const getMovie = (id) => 
+  db.ref(`movies/${id}`).once('value');;
+
 export const getMovies = () => 
   db.ref('movies').once('value');;
-
+ 
 export const movieRef = () => 
-  db.ref('movies');
-
-export const getWatchList = (uid) => 
-   db.ref(`users/${uid}/watchList`).once('value')
+  db.ref('movies'); 
 
 export const saveMovieComment = (id, userComment, user) => {
     // var date = new Date(); 
@@ -61,6 +66,11 @@ export const saveMovieSuggestion = (selected, rating, user) => {
     runtime: selected.runtime
   });
 }
+
+// *********** Watchlist ***********
+
+export const getWatchList = (uid) => 
+  db.ref(`users/${uid}/watchList`).once('value')
 
 export const removeMovieFromWatchList = (uid, key, id) => {
   db.ref(`users/${uid}/watchList/${key}`).remove()

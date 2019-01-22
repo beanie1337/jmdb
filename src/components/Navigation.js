@@ -16,6 +16,7 @@ const Navigation = () =>
     <div>
         <div style={{position:"absolute", zIndex:0, marginTop:"5px", marginLeft:"20px"}}>
             <a href={routes.HOME}><img style={{position:"absolute", height:"90px"}} src={img} alt="JMBD" /></a>
+            <span className="JMDBHeaderText">Jön53r5 m0v!3 d4748453</span>
         </div>
         <div style={{zIndex:1}}>
             <Navbar color="light" light expand="md" className="rounded" style={{position:"static", height:"100px"}}>

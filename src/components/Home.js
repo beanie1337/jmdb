@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { db } from '../firebase';
 import withAuthorization from './withAuthorization';
 import {Alert, Container, Col, Row, Media, Button, Collapse, Card, CardBody, ListGroupItem, Tooltip, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Form, FormGroup, Label, Input} from 'reactstrap';
-import {TiDelete, TiEye, TiThumbsUp, TiWeatherSnow} from 'react-icons/ti';
+import {TiDelete, TiEye, TiThumbsUp, TiWeatherSnow, TiStar} from 'react-icons/ti';
 import {GoCommentDiscussion} from 'react-icons/go';
 import AddNewMovieDialog from './Movies';
+import StarRatingComponent from 'react-star-rating-component';
 import {Loader} from './Loading';
-import HotIcon from '../img/hot.png';
+import NewPostIcon from '../img/NewPostIcon.png';
 
 class HomePage extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class HomePage extends Component {
         movies: null,
         watchList: null,
         loader:true,
+        loaderWatchlist:true
       };
     }
     componentDidMount() {
@@ -32,7 +34,10 @@ class HomePage extends Component {
             this.setState({movies:sorted, loader:false});
         });
         db.getWatchList(userInfo.uid).then(snapshot => {
-            this.setState({watchList:snapshot.val()});
+            this.setState({
+                watchList:snapshot.val(),
+                loaderWatchlist:false
+            });
         });
 
         // db.movieRef().on('child_added', snapshot => {
@@ -59,7 +64,11 @@ class HomePage extends Component {
                 </Col>
                 <Col xs="3" style={{paddingRight:"0"}}>
                     <AddNewMovieDialog  />
-                    {!!watchList && <WatchList watchList={watchList} />}
+                    <ul className="list-group">
+                        <li className="list-group-item active" style={{textAlign:"center"}}><TiEye /> Min watchlist</li>
+                        {/* {this.state.loaderWatchlist ? <Loader /> : null } */}
+                        {watchList ? <WatchList watchList={watchList} /> : <li className="list-group-item">Inga filmer tillagda i din watchlist. Klicka på <TiEye size={24}/> för att spara ner ett filmtips till din watchlist.</li>}
+                    </ul>
                 </Col>
             </Row>
         </Container>
@@ -77,8 +86,7 @@ class WatchList extends Component {
     render() {
         var watchList = this.props.watchList;
         return(
-            <ul className="list-group">
-                <li className="list-group-item active" style={{textAlign:"center"}}><TiEye /> Min watchlist</li>
+            <div>
                 {Object.keys(watchList).map(key =>
                     <li key={key} className="list-group-item">
                         <a href="#" id={watchList[key].id} onClick={this.removeMovieFromWatchList.bind(this, key)}>
@@ -89,7 +97,7 @@ class WatchList extends Component {
                         }
                     </li>
                 )}
-            </ul>
+            </div>
         )
     }
 }
@@ -136,23 +144,21 @@ class MoviesList extends Component {
                                         <Col>
                                             <Row>
                                                 {movie.genres.length > 1 ? 
-                                                    
                                                         Object.keys(movie.genres).map(key =>
                                                             <span className="movieGenres badge badge-secondary" key={key}>{movie.genres[key].name}</span>
                                                         )
                                                      : 
                                                      <span className="movieGenres badge badge-secondary">{movie.genres[0].name}</span>
                                                 }
-                                                
                                             </Row>
                                             <Row>
                                                 <p style={{marginLeft:"10px", marginRight:"10px"}}>{movie.overview}</p>
                                             </Row>
                                             <Row>
                                                 <div style={{marginLeft:"10px"}}>
-                                                    <span className="">Språk: {movie.original_language}</span><br />
-                                                    <span className="">TMDb-rating: {movie.vote_average}</span><br />
-                                                    <span className="">Runtime: {movie.runtime}</span><br />
+                                                    <span className="badge badge-light">Språk:</span> {movie.original_language}<br />
+                                                    <span className="badge badge-light">TMDb-rating:</span> {movie.vote_average}<br />
+                                                    <span className="badge badge-light">Runtime:</span> {movie.runtime}<br />
                                                 </div>
                                             </Row>
                                         </Col>
@@ -179,13 +185,32 @@ class MovieCardMinimized extends Component {
     constructor(props) {
         super(props);
         this.toggleTooltip = this.toggleTooltip.bind(this);
-        this.state = { tooltipOpen: false,  movieCommentsCount: 0};
+        this.state = { 
+            tooltipOpen: false,  
+            movieCommentsCount: 0, 
+            movieRatingByOthersCount: 0,
+            userAlreadyRated:false,
+            userLatestLogin: ''
+        };
     }
     componentDidMount() {
+        var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
         db.getMovieComments(this.props.movie.id).then(snapshot => {
             this.setState({
-                movieCommentsCount: Object.keys(snapshot.val()).length
+                movieCommentsCount: Object.keys(snapshot.val()).length,
+                userLatestLogin:userInfo.LatestLogin
             })
+        })
+        db.getMovieRatingByOthers(this.props.movie.id).then(snapshot => {
+            this.setState({
+                movieRatingByOthersCount: Object.keys(snapshot.val()).length
+            })
+            var userRatings = Object.keys(snapshot.val());
+            if (userRatings.find(uid => uid == userInfo.uid)) {
+                this.setState({
+                    userAlreadyRated:true
+                })
+            }
         })
     }
     addToWatchList(selectedMovie) {
@@ -213,13 +238,6 @@ class MovieCardMinimized extends Component {
         });
         
     }
-    // movieCommentsCount(id) {
-    //     db.getMovieComments(id).then(snapshot => {
-    //         this.setState({
-    //             movieCommentsCount: Object.keys(snapshot.val()).length
-    //         })
-    //     })
-    // }
     toggleTooltip() {
         this.setState({
             tooltipOpen: !this.state.tooltipOpen
@@ -228,28 +246,159 @@ class MovieCardMinimized extends Component {
     render() {
         const movie = this.props.movie;
         //this.movieCommentsCount(movie.id)
+        var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
+        var diff = userInfo.LatestLogin - movie.addedByUserDate;
+        var hourDiff = Math.floor(diff/1000/60/60);
+
         return(
             <div>
                 <div className="moviePreInfo">
                     <h4 className="movieTitleSpan">{movie.title} <span style={{color:"gray", fontSize:"16px"}}> ({movie.release_date})</span></h4> 
-                    <span className="movieAddedBy badge badge-light">Tillagd av: {movie.addedByUser}</span>
+                    <span className="movieAddedBy badge badge-light">Tillagd av: {movie.addedByUser}</span> 
                     <span className="movieAddedBy badge badge-light">Tillagd datum: {new Date(movie.addedByUserDate).toLocaleDateString()}</span>
                     <span className="movieAddedBy badge badge-light">{movie.addedByUser}'s rating: <UserRating movieRating={movie.addedByUserRating}/></span>
+                    {hourDiff <= 24  ? <img id={movie.id} className="newPostIcon" src={NewPostIcon} /> : null}
                 </div>
 
                 <ThumbsUp movie={movie}/>
 
                 <a id={"addToWatch"+movie.id} href="#" className="addToWatchList" onClick={(e) => {e.stopPropagation();this.addToWatchList(movie)}}><TiEye size={24}/></a>
                 
+                <MovieRatingByOthers movie={movie} movieRatingByOthersCount={this.state.movieRatingByOthersCount} userAlreadyRated={this.state.userAlreadyRated}/>
+
                 <MovieCommentsDialog movie={movie} movieCommentsCount={this.state.movieCommentsCount}/>
                 
-                {/* <Tooltip placement="right" isOpen={this.state.tooltipOpen} target={"commentMovie"+movie.id} toggle={this.toggleTooltip}>
-                                                        Lägg till en kommentar
-                                                    </Tooltip> */}
-               
                 <Tooltip placement="right" delay={0} isOpen={this.state.tooltipOpen} target={"addToWatch"+movie.id} toggle={this.toggleTooltip}>
                     Lägg till '{movie.title}' i din watchlist
                 </Tooltip>
+            </div>
+        )
+    }
+}
+
+class MovieRatingByOthers extends Component {
+    constructor(props) {
+        super(props)
+        this.state = { 
+            tooltipOpen: false, 
+            modal:false,
+            rating: 1,
+            successMessage: false,
+            movieRatingByOthers: '',
+            loader: true
+        }
+
+        this.toggleTooltip = this.toggleTooltip.bind(this);
+        this.toggle = this.toggle.bind(this);
+        this.save = this.save.bind(this);
+        this.cancel = this.cancel.bind(this);
+    }
+    openMovieRatingByOthers(movie) {
+        db.getMovieRatingByOthers(movie.id).then((snapshot) => {
+            this.setState({
+                movieRatingByOthers:snapshot.val(),
+                loader:false
+            })
+        })
+    }
+    save(movie) {
+        //TODO: Loading spinner!!!!
+        var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
+        db.saveMovieRatingByOthers(movie.id, userInfo, this.state.rating).then(() => {
+            this.setState({
+                successMessage: true
+            });
+        })
+    }
+    onStarClick(nextValue, prevValue, name) {
+        this.setState({rating: nextValue});
+    }
+    onChange = (event, { newValue, method }) => {
+        this.setState({ value: newValue });
+    }
+    cancel() {
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+    toggleTooltip() {
+        this.setState({
+            tooltipOpen: !this.state.tooltipOpen
+        });
+    }
+    toggle() {
+        this.setState({
+            modal: !this.state.modal
+        });
+    };
+    render() {
+        const movie = this.props.movie;
+        const { rating, movieRatingByOthers } = this.state;
+        return(
+            <div>
+                <Tooltip placement="left" delay={0} isOpen={this.state.tooltipOpen} target={"movieRateIcon"+movie.id} toggle={this.toggleTooltip}>
+                    Betygsätt '{movie.title}'
+                </Tooltip>
+                <a id={"movieRateIcon"+movie.id} href="#" className="movieRateIcon" onClick={(e) => {e.stopPropagation();this.toggle();this.openMovieRatingByOthers(movie)}}>
+                    <TiStar size={24}/>
+                    {this.props.movieRatingByOthersCount > 0 ? 
+                        <span className="movieRatingByOthersCount">{this.props.movieRatingByOthersCount}</span> 
+                        : 
+                        <span className="movieRatingByOthersCountNone">{this.props.movieRatingByOthersCount}</span>
+                    }
+                </a>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <ModalHeader toggle={this.toggle}>Betygsätt filmen '{movie.title}'</ModalHeader>
+                    <ModalBody>
+                    {!!this.state.successMessage &&
+                        <Alert color="success">
+                            Betyg inlagt!
+                        </Alert>
+                    }
+                    
+                    <h5>Andra användares betyg:</h5>
+                    {this.state.loader ? <Loader /> : null }
+                    {movieRatingByOthers ?
+                            Object.keys(movieRatingByOthers).map((key, index) =>
+                                <div className="message" key={key}>
+                                    <span className="message__author">
+                                        <Badge color="secondary">{movieRatingByOthers[key].username}:</Badge> {movieRatingByOthers[key].rating}/10
+                                    </span>
+                                    <span>
+                                        
+                                    </span>
+                                </div>
+                            )
+                        : <span>Ingen har satt ett betyg än</span>
+                    }
+                    <hr />
+                    <h5>Ge ditt betyg:</h5>
+                    
+                    {
+                        this.props.userAlreadyRated ? 
+                        <span>Du har redan gett betyg!</span> 
+                        : 
+                        <div>
+                            <Label>Min rating: {rating}</Label>
+                            <div style={{border:"1px dotted lightgrey", textAlign:"center", paddingTop:"10px"}}>
+                                
+                                <StarRatingComponent 
+                                    name="rate2" 
+                                    starCount={10}
+                                    value={rating}
+                                    renderStarIcon={() => <span><TiStar size={34} /></span>}
+                                    onStarClick={this.onStarClick.bind(this)}
+                                />
+                            </div>
+                        </div>
+                    }
+                    
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" className="saveCommentsButton" onClick={() => {this.save(movie)}}>Spara</Button>
+                        <Button color="danger" onClick={this.cancel}>Stäng</Button>
+                    </ModalFooter>
+                </Modal>
             </div>
         )
     }
@@ -329,10 +478,6 @@ class MovieCommentsDialog extends Component {
             })
         })
     }
-    // onChange = (event, { newValue, method }) => {
-    //     this.setState({ value: newValue });
-    // }
-      
     save(movie, comment) {
         //TODO: Loading spinner!!!!
         var userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
@@ -372,16 +517,15 @@ class MovieCommentsDialog extends Component {
         return(
             <div>
                 <Tooltip placement="top" delay={0} isOpen={this.state.tooltipOpen} target={"commentMovie"+movie.id} toggle={this.toggleTooltip}>
-                    Kommentarer
+                    Kommentarer: {this.props.movieCommentsCount}
                 </Tooltip>
-                <a id={"commentMovie"+movie.id} href="#" className="movieCommentIcon" onClick={(e) => {e.stopPropagation();this.toggle();this.openComments(movie)}}><GoCommentDiscussion size={24}/></a>
-                
-                {this.props.movieCommentsCount > 0 ? 
-                    <span className="movieCommentsCount">{this.props.movieCommentsCount}</span> 
-                    : 
-                    <span className="movieCommentsCountNone">{this.props.movieCommentsCount}</span>
-                }
-                
+                <a id={"commentMovie"+movie.id} href="#" className="movieCommentIcon" onClick={(e) => {e.stopPropagation();this.toggle();this.openComments(movie)}}><GoCommentDiscussion size={24}/>
+                    {this.props.movieCommentsCount > 0 ? 
+                        <span className="movieCommentsCount">{this.props.movieCommentsCount}</span> 
+                        : 
+                        <span className="movieCommentsCountNone">{this.props.movieCommentsCount}</span>
+                    }
+                </a>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Kommentarer om filmen '{movie.title}'</ModalHeader>
                     <ModalBody>

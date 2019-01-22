@@ -22,6 +22,15 @@
   color: #61dafb;
 }
 
+.JMDBHeaderText {
+  margin-left: 100px;
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 32px;
+  font-family: "Comic Sans MS";
+  display: block;
+}
+
 body {
   background-image: url("../img/background.png");
   background-size:cover;
@@ -106,6 +115,13 @@ body {
   color:lightgray;
 }
 
+.movieRateIcon {
+  position: absolute;
+  right:80px;
+  color:gray;
+  top:25px;
+}
+
 .movieCommentIcon {
   position: absolute;
   right:50px;
@@ -115,22 +131,38 @@ body {
 
 .movieCommentsCount {
   position: absolute;
-  right:55px;
-  top:20px;
+  right:8px;
+  bottom:20px;
   font-size: 13px;
-  background-color: white;
   color:darkgreen;
-  font-weight: bold;
+  opacity: 0.5;
 }
 
 .movieCommentsCountNone {
   position: absolute;
-  right:55px;
-  top:20px;
+  right:8px;
+  bottom:20px;
   font-size: 13px;
-  background-color: white;
   color:gray;
-  font-weight: bold;
+  opacity: 0.5;
+}
+
+.movieRatingByOthersCount {
+  position: absolute;
+  right:8px;
+  bottom:20px;
+  font-size: 13px;
+  color:darkgreen;
+  opacity: 0.5;
+}
+
+.movieRatingByOthersCountNone {
+  position: absolute;
+  right:8px;
+  bottom:20px;
+  font-size: 13px;
+  color:gray;
+  opacity: 0.5;
 }
 
 .addToWatchList {
@@ -138,6 +170,14 @@ body {
   right:20px;
   color:gray;
   top:25px;
+}
+
+.newPostIcon {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height:20px;
+  transform: rotate(45deg);
 }
 
 .thumbsUp {

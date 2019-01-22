@@ -54,6 +54,7 @@ class SignInForm extends Component {
           //set user info in local storage
           var userInfoVal = userInfo.val();
           userInfoVal['uid'] = data.user.uid;
+          userInfoVal['LatestLogin'] = parseInt(Date.now());
           var userInfoJSON = JSON.stringify(userInfoVal);
           localStorage.setItem('loggedInUserInfo', userInfoJSON);
           this.setState({ ...INITIAL_STATE });

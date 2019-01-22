@@ -41,6 +41,18 @@ export const saveMovieComment = (id, userComment, user) => {
     });
 }
 
+export const saveMovieRatingByOthers = (movieId, user, rating) => {
+  return db.ref(`movieRatingByOtherUsers/${movieId}/${user.uid}`).set({
+      username: user.username,
+      rating: rating
+  });
+}
+
+export const getMovieRatingByOthers = (movieId) => 
+  db.ref(`movieRatingByOtherUsers/${movieId}`).once('value');;
+  
+
+
 export const saveMovieSuggestion = (selected, rating, user) => {
   return db.ref(`movies/${selected.id}`).set({
     addedByUser:user.username,

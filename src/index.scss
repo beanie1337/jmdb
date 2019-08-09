@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+/* Override Material-ui css */
+.movie {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  .card {
+    box-shadow: none !important;
+    border: none !important;
+    .movieHeader {
+      padding-bottom: 0px !important;
+      padding-top: 0px !important;
+      padding-right: 55px !important;
+    }
+    .movieCollapseButtons {
+      text-align: center;
+      padding: 0px !important;
+      > * {
+        color:gray !important;
+      }
+    }
+    .backdropImage {
+      width:500px !important;
+    }
+    .movieInfo {
+      text-align: center;
+      border-right: 1px solid lightgray;
+      border-left: 1px solid lightgray;
+      margin-left: 45px;
+      .statisticInfo {
+        margin-bottom: 10px;
+        .first, .second {
+          .MuiListItemIcon-root {
+            min-width: 25px;
+          }
+          display: inline-block !important;
+        }
+      }
+      .MuiIcon-root {
+        font-size: 1.1rem !important;
+        line-height: 1 !important;
+      }
+    }
+  }
+
+}
+.MuiAvatar-root {
+  border-radius: 0px !important;
+  width: 70px !important;
+  height: 100px !important;
+  margin-right: 10px;
+  display: inline-block !important;
+}
+.addToWatchList {
+  z-index: 1;
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  margin-right: 5px;
+  margin-top:5px;
+}
+.movieChip {
+  height: 18px !important;
+  font-size: 0.7rem !important; 
+  margin-left: 2px;
+  margin-top: 10px;
+  .MuiChip-icon {
+    font-size: 1.1rem !important;
+  }
+}

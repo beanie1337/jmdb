@@ -24,10 +24,10 @@ export const getMovieComments = (selectedMovieId) =>
   db.ref(`comments/${selectedMovieId}`).once('value');
 
 export const getMovie = (id) => 
-  db.ref(`movies/${id}`).once('value');;
+  db.ref(`movies/${id}`).once('value');
 
 export const getMovies = () => 
-  db.ref('movies').once('value');;
+  db.ref('movies').once('value');
  
 export const movieRef = () => 
   db.ref('movies'); 
@@ -84,7 +84,7 @@ export const saveMovieSuggestion = (selected, rating, user) => {
 export const getWatchList = (uid) => 
   db.ref(`users/${uid}/watchList`).once('value')
 
-export const removeMovieFromWatchList = (uid, key, id) => {
+export const removeMovieFromWatchList = (uid, key) => {
   db.ref(`users/${uid}/watchList/${key}`).remove()
 }
 export const saveMovieToWatchList = (uid, selected) => {

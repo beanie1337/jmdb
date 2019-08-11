@@ -1,6 +1,20 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "users": {
+      ".read": "auth != null",
+     ".write": "auth != null"
+    },
+    "movies": {
+      ".read": "auth != null",
+     ".write": "auth != null && root.child('users').child(auth.uid).child('verified').val() == true"
+    },
+    "movieRatingByOtherUsers": {
+      ".read": "auth != null",
+     ".write": "auth != null && root.child('users').child(auth.uid).child('verified').val() == true"
+    },
+    "comments": {
+      ".read": "auth != null",
+     ".write": "auth != null && root.child('users').child(auth.uid).child('verified').val() == true"
+    }
   }
 }

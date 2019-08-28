@@ -32,12 +32,12 @@ export const getMovies = () =>
 export const movieRef = () => 
   db.ref('movies'); 
 
-export const saveMovieComment = (id, userComment, user) => {
+export const saveMovieComment = (id, comment) => {
     // var date = new Date(); 
     return db.ref(`comments/${id}/${parseInt(Date.now())}`).set({
-      addedByUser:user.username,
-      addedByUserDate:parseInt(Date.now()),
-      comment:userComment
+      addedByUser:comment.addedByUser,
+      addedByUserDate:comment.addedByUserDate,
+      comment:comment.comment
     });
 }
 
@@ -75,9 +75,19 @@ export const saveMovieSuggestion = (selected, rating, user) => {
     imdb_id: selected.imdb_id,
     revenue: selected.revenue,
     tagline: selected.tagline,
-    runtime: selected.runtime
+    runtime: selected.runtime,
+    movieCommentsCount: 0
   });
 }
+
+export const incrementMovieCommentsCount = (movieId) => {
+  getMovie(movieId).then(snapshot => {
+    let commentsCount = snapshot.val().movieCommentsCount +1
+    console.log(commentsCount)
+    db.ref(`movies/${movieId}`).update({movieCommentsCount:commentsCount})
+  });
+  
+} 
 
 // *********** Watchlist ***********
 

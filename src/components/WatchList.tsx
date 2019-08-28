@@ -4,29 +4,38 @@ import ListItem from "@material-ui/core/ListItem";
 import { IWatchListProps, IWatchListState } from "../types/types";
 import Icon from "@material-ui/core/Icon";
 import { IconButton, Subheader } from "material-ui";
-import { Box, Snackbar } from "@material-ui/core";
+import { Box, Snackbar, Avatar, CircularProgress, ListItemIcon, Tooltip } from "@material-ui/core";
 
 export class WatchList extends React.Component<IWatchListProps, {}> {
     public render() {
         return <>
-                <Box bgcolor="primary.main">
-                    <Subheader><Icon>remove_red_eye</Icon>Min watchlist</Subheader>
+                <Box bgcolor="#ef6c00" className="watchListBox">
+                    <Subheader>
+                        <ListItem style={{color:'white'}}>
+                            <ListItemIcon>
+                                <Icon>remove_red_eye</Icon>
+                            </ListItemIcon>
+                            Min watchlist
+                        </ListItem>
+                    </Subheader>
                 </Box>
-                {
-                    this.props.watchList ? 
-                    <List>
+                {!this.props.completedLoadingWatchList ? <CircularProgress /> : 
+                    <List className="watchList">
                         {
                             Object.entries(this.props.watchList).map((x, index) => {
                                 return <ListItem key={x[1].id}>
-                                            <IconButton className="addToWatchList" touch={true} onClick={() => this.props.removeMovieFromWatchList(x, index)}>
+                                            <IconButton className="removeFromWatchList" touch={true} onClick={() => this.props.removeMovieFromWatchList(x, index)}>
                                                 <Icon>clear</Icon> 
                                             </IconButton>
-                                            {x[1].title}
+                                            <Tooltip title={x[1].title} placement="top">
+                                                 <span>
+                                                    {x[1].title.length > 20 ? `${x[1].title.substring(0, 20)}...` : x[1].title}
+                                                 </span>
+                                            </Tooltip>
                                     </ListItem>
                             })
                         }
                     </List>
-                    : null
                 }
              </>
     }

@@ -1,6 +1,13 @@
 
+import React from 'react';
+
 export function formatCurrency(num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    if (num === 0) {
+        return <span style={{color:'lightgray'}}>No info</span>;
+    }
+    else {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
 }
 
 export function getGenres(genres) {

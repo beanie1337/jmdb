@@ -1,3 +1,5 @@
+import { userInfo } from "os";
+
 export interface IMoviesState {
     movies: IMovie[],
     myWatchList: IMovie[],
@@ -5,7 +7,35 @@ export interface IMoviesState {
     rowsPerPage:number,
     feedbackOpen:boolean,
     feedbackMessage:string,
-    feedbackVariant?: 'error' | 'info' | 'success' | 'warning'
+    feedbackVariant?: 'error' | 'info' | 'success' | 'warning',
+    filterValue:string,
+    completedLoadingMovies:boolean,
+    completedLoadingWatchList: boolean,
+    addNewMovieDialogOpen:boolean,
+    movieCommentsDialogOpen:boolean,
+    movieComments:IMovieComment[],
+    selectedMovieId:number | null
+}
+
+export interface IMovieCommentsDialogProps {
+    open:boolean,
+    comments:IMovieComment[],
+    saveMovieComment:any,
+    movieCommentsDialog:any,
+    userInfo:any,
+    selectedMovieId:number | null
+}
+
+export interface IMovieCommentsDialogState {
+    comment:string,
+    page: number,
+    rowsPerPage: number,
+}
+
+export interface IMovieComment {
+    addedByUser:string,
+    addedByUserDate:number,
+    comment:string
 }
 
 export interface IMoviesProps {
@@ -14,7 +44,8 @@ export interface IMoviesProps {
 
 export interface IMovieProps {
     movie:IMovie,
-    addMovieToWatchlist:any
+    addMovieToWatchlist:any,
+    handleCommentsClick:any
 }
 
 export interface IMovieState {
@@ -42,8 +73,9 @@ export interface IMovie {
     tagline:string,
     video:false,
     vote_average:number,
-    vote_count:number
-
+    vote_count:number,
+    movieCommentsCount:number
+    [key:number]:IMovie
 }
 
 export interface IOverviewProps {
@@ -53,7 +85,8 @@ export interface IOverviewProps {
 export interface IWatchListProps {
     userId: string,
     watchList: IMovie[],
-    removeMovieFromWatchList:any
+    removeMovieFromWatchList:any,
+    completedLoadingWatchList:boolean
 }
 
 export interface IWatchListState {
@@ -63,13 +96,13 @@ export interface IWatchListState {
 export interface IPaginationProps {
     page:number,
     rowsPerPage:number,
-    movies:IMovie[],
+    items:IMovie[] | IMovieComment[],
     handleChangePage:any,
     handleChangeRowsPerPage:any
 }
 
 export interface IFeedbackMessageProps {
-    variant?:string, 
+    variant:string, 
     className?:string,
     message:string,
     open:boolean,
@@ -78,4 +111,32 @@ export interface IFeedbackMessageProps {
 
 export interface IFeedbackMessageState {
     showSnackbar:boolean
+}
+
+export interface IAddNewDialogProps {
+    open:boolean,
+    addNewMovieDialog:any,
+    addMovieSuggestion:any,
+    userInfo:any
+}
+
+export interface IAddNewDialogState {
+    suggestions: IMovie[],
+    selection: IMovie,
+    value:string,
+    userRatingValue:number
+}
+
+export interface ISuggestedMovie {
+    suggestion:IMovie[]
+}
+
+export interface IMovieStatsInfoProps {
+    movie: IMovie
+}
+
+export interface IMovieToolsProps {
+    movie: IMovie,
+    addMovieToWatchList: any,
+    handleCommentsClick:any
 }

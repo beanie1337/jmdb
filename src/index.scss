@@ -12,34 +12,95 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
+.jmdbContainer {
+  .success {
+    background-color: green !important;
+  }
+}
 /* Override Material-ui css */
+.watchListContainer {
+  .addMovieSuggestionBtn {
+    width: 100%;
+    margin-bottom: 10px;
+    .MuiIcon-root {
+      margin-right: 10px;
+    }
+  }
+}
 .movie {
   padding-left: 0px !important;
   padding-right: 0px !important;
   .card {
     box-shadow: none !important;
     border: none !important;
+    border-left: 10px solid lightgray !important;
+    .addToWatchList {
+      z-index: 1;
+      position: absolute !important;
+      right: 0 !important;
+      top: 0 !important;
+      margin-right: 5px;
+      margin-top:5px;
+    }
+    .comments {
+      z-index: 1;
+      position: absolute !important;
+      right: 0 !important;
+      top: 0 !important;
+      margin-right: 5px;
+      margin-top:35px !important;
+      color:gray;
+      height: 30px !important;
+      padding: 0px !important;
+    }
+    .comments .badge {
+      .MuiBadge-badge {
+        font-size: 0.55rem !important;
+        top: 3px !important;
+        right: 5px !important;
+        height: 14px !important;
+        padding: 0px !important;
+        min-width: 16px !important;
+      }
+    }
     .movieHeader {
       padding-bottom: 0px !important;
       padding-top: 0px !important;
       padding-right: 55px !important;
+      text-decoration: underline;
+    }
+    .movieOverview {
+      margin-left: 10px;
+      text-align: center;
+      .MuiIcon-root {
+        font-size: 15px;
+        color:gray;
+      }
     }
     .movieCollapseButtons {
+      margin-top:20px;
       text-align: center;
       padding: 0px !important;
       > * {
         color:gray !important;
+      }
+      .showLess {
+        background-color: lightgray !important;
+        color:black !important;
+        margin-top: 10px !important;
+        width: 30%;
+        margin-bottom: 10px !important;
       }
     }
     .backdropImage {
       width:500px !important;
     }
     .movieInfo {
+      padding: 0px !important;
       text-align: center;
-      border-right: 1px solid lightgray;
-      border-left: 1px solid lightgray;
-      margin-left: 45px;
+      display: inline-block;
+      position: absolute;
+      margin-top:10px;
       .statisticInfo {
         margin-bottom: 10px;
         .first, .second {
@@ -55,7 +116,49 @@ code {
       }
     }
   }
-
+}
+.jmdbContainer {
+  .searchBar {
+    display: inline-block;
+    padding-left: 10px;
+    border: 1px solid lightgray !important;
+  }
+  .pagination {
+    display: inline-block;
+    float:right;
+    .MuiTypography-root.MuiTablePagination-caption.MuiTypography-caption.MuiTypography-colorInherit {
+      font-size: 0.90rem !important;
+    }
+  }
+  .MuiCircularProgress-root {
+    margin-left: 50%;
+    margin-top:30px;
+    margin-bottom: 30px;
+  }
+}
+.watchList {
+  // li {
+  //   padding-right: 10px !important;
+  // }
+  li:nth-child(even) {
+    background-color:#f2f2f2 !important;
+  }
+}
+.watchListBox {
+  
+  padding-left: 30px;
+  .MuiListItemIcon-root {
+    color: white !important;
+    min-width: 30px !important;
+  }
+}
+.removeFromWatchList {
+  z-index: 1;
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  margin-right: 5px;
+  margin-top:5px;
 }
 .MuiAvatar-root {
   border-radius: 0px !important;
@@ -64,20 +167,115 @@ code {
   margin-right: 10px;
   display: inline-block !important;
 }
-.addToWatchList {
+
+.userRating {
   z-index: 1;
+  font-size: 14px;
   position: absolute !important;
-  right: 0 !important;
-  top: 0 !important;
-  margin-right: 5px;
-  margin-top:5px;
+  left: 20px !important;
+  top: 110px !important;
+  div {
+    display: inline-block;
+    line-height: 1px;
+    vertical-align: middle;
+    color:gray;
+  }
 }
 .movieChip {
   height: 18px !important;
   font-size: 0.7rem !important; 
-  margin-left: 2px;
-  margin-top: 10px;
+  margin-bottom: 5px;
+  background-color:#d1e3ff !important;
   .MuiChip-icon {
     font-size: 1.1rem !important;
+  }
+}
+
+.addedByUserChip {
+  height: 18px !important;
+  margin-left: 10px;
+  z-index: 1;
+  position: absolute !important;
+  top: 10px !important;
+  .MuiChip-icon {
+    font-size: 1.3rem !important;
+    margin-left: 0px !important;
+  }
+}
+
+.addNewMovieDialog {
+  .addNewMovieForm {
+    .userRatingLabel {
+      margin-top:20px;
+    }
+  }
+  .dialogContent {
+    height:100%;
+    width:550px !important;
+  }
+  .image {
+    float:right;
+    margin-right: 20px;
+    margin-top: 30px;
+  }
+  .inputFields {
+    float:left;
+  }
+}
+
+.movieCommentsDialog {
+  .dialogContent {
+    display: inline-block;
+    .commentsList {
+      max-height: 400px;
+      overflow-y: scroll;
+    }
+    .commentContent {
+      display: inline-block;
+      width: 500px;
+      padding:10px;
+      border-left: 3px solid #345291;
+      border-right: 3px solid #345291;
+      .user {
+        display: inline-block;
+        font-weight: 600;
+      }
+      .date {
+        float: right;
+        font-size: 14px;
+        color:gray;
+      }
+      .comment {
+        padding-left: 10px;
+      }
+    }
+    .noCommentsExists {
+      display: inline-block;
+      width: 500px;
+      padding:10px;
+    }
+    .commentTextField {
+      width: 100%;
+      border-top: 1px solid lightgray;
+    }
+  }
+}
+
+#react-autowhatever-1 {
+  top:auto !important;
+  position:fixed !important;
+  width: 460px;
+  .react-autosuggest__suggestions-list
+  {
+    max-height: 350px;
+    overflow-y: auto;
+    .suggestionImage {
+      width:30px;
+      float:left;
+      margin-right: 10px;
+    }
+    .suggestionTitle {
+      float:left;
+    }
   }
 }

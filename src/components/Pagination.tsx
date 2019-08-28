@@ -8,10 +8,11 @@ export class Pagination extends React.Component<IPaginationProps, {}> {
     }
     render() {
         return <TablePagination
+                    className="pagination"
                     component="div"
                     page={this.props.page}
                     rowsPerPage={this.props.rowsPerPage}
-                    count={Object.keys(this.props.movies).length}
+                    count={Object.keys(this.props.items).length}
                     onChangePage={this.props.handleChangePage}
                     onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
                     backIconButtonProps={{

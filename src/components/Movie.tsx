@@ -57,7 +57,7 @@ export class Movie extends React.Component<IMovieProps, IMovieState> {
                             }
                             titleStyle={{fontSize:'22px'}}
                             subtitle={<Overview movie={this.props.movie}/>}
-                            avatar={<Avatar alt={this.props.movie.title} src={'http://image.tmdb.org/t/p/w185' + this.props.movie.poster_path} />}
+                            avatar={<Avatar alt={this.props.movie.title} src={'https://image.tmdb.org/t/p/w185' + this.props.movie.poster_path} />}
                         />
                         
                         {
@@ -67,7 +67,7 @@ export class Movie extends React.Component<IMovieProps, IMovieState> {
                                     expandable={true}
                                     overlay={<CardTitle subtitleStyle={{fontSize:'14px'}} titleStyle={{fontSize:'18px'}} title={this.props.movie.title} subtitle={this.props.movie.tagline} />}
                                 >
-                                    <img style={{width:'400px', maxWidth: '400px'}} src={'http://image.tmdb.org/t/p/w500' + this.props.movie.backdrop_path} alt={this.props.movie.title} />
+                                    <img style={{width:'400px', maxWidth: '400px'}} src={'https://image.tmdb.org/t/p/w500' + this.props.movie.backdrop_path} alt={this.props.movie.title} />
                                 </CardMedia> 
                                 : 
                                 null
@@ -135,13 +135,13 @@ class MovieStatsInfo extends React.Component<IMovieStatsInfoProps, {}> {
                                 <Tooltip title="Budget" placement="left">
                                     <ListItemIcon><Icon>attach_money</Icon></ListItemIcon> 
                                 </Tooltip>
-                                {formatCurrency(this.props.movie.budget)}
+                                $ {formatCurrency(this.props.movie.budget)}
                             </ListItem>
                             <ListItem>
                                 <Tooltip title="Inkomst" placement="left">
                                     <ListItemIcon><Icon>show_chart</Icon></ListItemIcon>
                                 </Tooltip>
-                                {formatCurrency(this.props.movie.revenue)}
+                                $ {formatCurrency(this.props.movie.revenue)}
                             </ListItem>
                         </List>
                     </div>

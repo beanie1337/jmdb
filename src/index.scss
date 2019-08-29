@@ -67,7 +67,6 @@ code {
       padding-bottom: 0px !important;
       padding-top: 0px !important;
       padding-right: 55px !important;
-      text-decoration: underline;
     }
     .movieOverview {
       margin-left: 10px;
@@ -276,6 +275,51 @@ code {
     }
     .suggestionTitle {
       float:left;
+    }
+  }
+}
+
+
+/***** MOBILE *****/
+@media only screen and (max-width: 768px) {
+  .watchListContainer {
+    display: none;
+  }
+  .movie {
+    .card {
+      width:360px;
+      .movieCollapseButtons {
+        margin-top:0px;
+      }
+      .movieInfo {
+        position: relative;
+      }
+      .movieHeader {
+        padding:5px;
+        .addedByUserChip {
+          display: none;
+        }
+      }
+    }
+  }
+  .jmdbContainer {
+    width: 350px;
+    padding-right: 15px;
+    padding-left: 10px;
+    margin-right: auto;
+    margin-left: auto;
+
+  }
+  .movieListContainer {
+    width: 380px;
+  }
+  .pagination {
+    float:none !important;
+    .MuiToolbar-gutters {
+      padding-left: 0px;
+    }
+    .MuiTablePagination-selectRoot {
+      margin-right: 8px;
     }
   }
 }

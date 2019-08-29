@@ -19,24 +19,28 @@ export class WatchList extends React.Component<IWatchListProps, {}> {
                         </ListItem>
                     </Subheader>
                 </Box>
+                
                 {!this.props.completedLoadingWatchList ? <CircularProgress /> : 
-                    <List className="watchList">
-                        {
-                            Object.entries(this.props.watchList).map((x, index) => {
-                                return <ListItem key={x[1].id}>
-                                            <IconButton className="removeFromWatchList" touch={true} onClick={() => this.props.removeMovieFromWatchList(x, index)}>
-                                                <Icon>clear</Icon> 
-                                            </IconButton>
-                                            <Tooltip title={x[1].title} placement="top">
-                                                 <span>
-                                                    {x[1].title.length > 20 ? `${x[1].title.substring(0, 20)}...` : x[1].title}
-                                                 </span>
-                                            </Tooltip>
-                                    </ListItem>
-                            })
+                    this.props.watchList != null ? 
+                        <List className="watchList">
+                            {
+                                Object.entries(this.props.watchList).map((x, index) => {
+                                    return <ListItem key={x[1].id}>
+                                                <IconButton className="removeFromWatchList" touch={true} onClick={() => this.props.removeMovieFromWatchList(x, index)}>
+                                                    <Icon>clear</Icon> 
+                                                </IconButton>
+                                                <Tooltip title={x[1].title} placement="top">
+                                                    <span>
+                                                        {x[1].title.length > 20 ? `${x[1].title.substring(0, 20)}...` : x[1].title}
+                                                    </span>
+                                                </Tooltip>
+                                        </ListItem>
+                                })
                         }
-                    </List>
+                        </List>
+                    : <ListItem> - Inga filmer hittade</ListItem>
                 }
+                
              </>
     }
 }

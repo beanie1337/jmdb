@@ -12,8 +12,6 @@ import { FeedbackMessage } from './FeedbackMessage';
 import { AddNewMovieDialog } from './AddNewMovieDialog';
 import { MovieCommentsDialog } from './MovieCommentsDialog';
 
-const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo') || "");
-
 const theme = createMuiTheme({
     overrides: {
       MuiTooltip: {
@@ -56,7 +54,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
       this.movieCommentsDialog = this.movieCommentsDialog.bind(this);
     }
     public componentDidMount() {
-
+        const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo')!);
         //Get movies
         db.getMovies().then(snapshot => {
             var test = Object.entries(snapshot.val()).sort((a: any, b:any) => { 
@@ -78,7 +76,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
         })
     }
     private removeMovieFromWatchList(key: any, index: number) {
-        
+        const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo')!);
         db.removeMovieFromWatchList(userInfo.uid, key[0]);
         var newWatchList = [] as IMovie[]
         Object.entries(this.state.myWatchList).find((k) => {
@@ -95,7 +93,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
         })
     }
     private addMovieToWatchList(movie:IMovie) {
-
+        const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo')!);
         db.getWatchList(userInfo.uid).then(snapshot => {
             if (snapshot.val() != null) {
                 var matchingKey = Object.keys(snapshot.val()).find(key => snapshot.val()[key].id == movie.id);
@@ -197,6 +195,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
         })
     }
     public render() {
+        const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo')!);
         var variant = this.state.feedbackVariant != undefined ? this.state.feedbackVariant : "";
         const { filterValue } = this.state;
         let filteredMovies = [] as IMovie[];
@@ -273,8 +272,8 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
                             </Container>
                     }
                     </Col>
-                    <Col xs="3" style={{paddingRight:"0"}}>
-                        <Container className="watchListContainer">
+                    <Col xs="3" style={{paddingRight:"0"}}  className="watchListContainer">
+                        <Container>
                             <Button className="addMovieSuggestionBtn" onClick={() => this.addNewMovieDialog(true)} color="primary" variant="contained">
                                 <Icon>add_circle</Icon>
                                  Lägg till filmtips

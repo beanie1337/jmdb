@@ -50,13 +50,21 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
         movie.addedByUser = this.props.userInfo.username;
         movie.addedByUserDate = new Date(Date.now());
 
-        db.saveMovieSuggestion(this.state.selection, this.state.userRatingValue, this.props.userInfo).then(() => {
-            this.props.addNewMovieDialog(false);
-            this.props.addMovieSuggestion([
-                movie.id.toString(),
-                movie
-            ]);
+        db.getMovie(this.state.selection.id).then(snapshot => {
+            if (snapshot.val() == null) {
+                db.saveMovieSuggestion(this.state.selection, this.state.userRatingValue, this.props.userInfo).then(() => {
+                    this.props.addNewMovieDialog(false);
+                    this.props.addMovieSuggestion([
+                        movie.id.toString(),
+                        movie
+                    ]);
+                })
+            }
+            else {
+                alert("Filmtipset finns redan!")
+            }
         })
+        
     }
     private onChange(event: React.FormEvent<any>, {newValue, method}: Autosuggest.ChangeEvent):void {
         this.setState({ value: newValue });
@@ -93,7 +101,7 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
                             getSuggestionValue={this.getSuggestionValue}
                             renderSuggestion={this.renderSuggestion}
                             inputProps={{
-                                placeholder: `Skriv minst 3 bokstäver för att påbörja sökningen`,
+                                placeholder: `Filmer hämtas från TMDB.org`,
                                 value,
                                 onChange: (e, changeEvent) => this.onChange(e, changeEvent),
                             }}

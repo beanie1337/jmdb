@@ -54,7 +54,7 @@ class PasswordForgetForm extends Component {
           value={this.state.email}
           onChange={event => this.setState(byPropKey('email', event.target.value))}
           type="text"
-          placeholder="Email Address"
+          placeholder="Emailadress"
         />
         <button disabled={isInvalid} type="submit">
           Återställ mitt lösenord

@@ -21,7 +21,7 @@ export class Pagination extends React.Component<IPaginationProps, {}> {
                     nextIconButtonProps={{
                         'aria-label' : 'Nästa'
                     }}
-                    labelRowsPerPage="Filmer per sida"
+                    labelRowsPerPage="Tips per sida"
                 />
     }
 }

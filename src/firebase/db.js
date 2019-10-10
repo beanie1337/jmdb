@@ -53,15 +53,15 @@ export const getMovieRatingByOthers = (movieId) =>
   
 
 
-export const saveMovieSuggestion = (selected, rating, user) => {
+export const saveMovieSuggestion = (selected, user) => {
   return db.ref(`movies/${selected.id}`).set({
-    addedByUser:user.username,
-    addedByUserDate:parseInt(Date.now()),
-    addedByUserRating:rating,
-    adult: selected.adult,
+    addedByUser: user.username,
+    addedByUserDate: parseInt(Date.now()),
+    addedByUserRating: selected.addedByUserRating,
+    adult: selected.adult !== undefined ? selected.adult : false,
     vote_count: selected.vote_count,
     id: selected.id,
-    video: selected.video,
+    video: selected.video !== undefined ? selected.video : false,
     vote_average: selected.vote_average,
     title: selected.title,
     popularity: selected.popularity,
@@ -71,12 +71,22 @@ export const saveMovieSuggestion = (selected, rating, user) => {
     backdrop_path: selected.backdrop_path,
     overview: selected.overview,
     release_date: selected.release_date,
-    budget: selected.budget,
-    imdb_id: selected.imdb_id,
-    revenue: selected.revenue,
-    tagline: selected.tagline,
-    runtime: selected.runtime,
-    movieCommentsCount: 0
+    budget: selected.budget !== undefined ? selected.budget : 0,
+    imdb_id: selected.imdb_id !== undefined ? selected.imdb_id : "",
+    revenue: selected.revenue !== undefined ? selected.revenue : 0,
+    tagline: selected.tagline !== undefined ? selected.tagline : "",
+    runtime: selected.runtime !== undefined ? selected.runtime : 0,
+    movieCommentsCount: 0,
+    media_type: selected.media_type,
+    moreInfo: selected.media_type === 'tv' ? { //Check if media_type is tv then save additional info
+      homepage: selected.homepage,
+      in_production: selected.in_production,
+      number_of_episodes: selected.number_of_episodes,
+      number_of_seasons: selected.number_of_seasons,
+      status: selected.status,
+      type: selected.type,
+      episode_run_time: selected.episode_run_time
+    } : null //Just null if media_type is movie
   });
 }
 

@@ -3,7 +3,7 @@ import withAuthorization from './withAuthorization';
 import { db } from '../firebase';
 import { Container, Col, Row } from 'reactstrap';
 import { IMoviesState, IMoviesProps, IMovie, IMovieComment } from '../types/types';
-import { Movie } from './Movie';
+import { SuggestionObject } from './SuggestionObject';
 import List from '@material-ui/core/List';
 import { WatchList } from './WatchList'
 import { Pagination } from './Pagination';
@@ -11,6 +11,7 @@ import { Paper, InputBase, IconButton, Icon, CircularProgress, Button, MuiThemeP
 import { FeedbackMessage } from './FeedbackMessage';
 import { AddNewMovieDialog } from './AddNewMovieDialog';
 import { MovieCommentsDialog } from './MovieCommentsDialog';
+import { green } from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
     overrides: {
@@ -43,7 +44,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
           selectedMovieId: null
       };
 
-      this.addMovieToWatchList = this.addMovieToWatchList.bind(this);
+      this.addSuggestionToWatchList = this.addSuggestionToWatchList.bind(this);
       this.removeMovieFromWatchList = this.removeMovieFromWatchList.bind(this);
       this.handleCloseFeedback = this.handleCloseFeedback.bind(this);
       this.handleChange = this.handleChange.bind(this);
@@ -92,7 +93,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
             feedbackVariant: 'success'
         })
     }
-    private addMovieToWatchList(movie:IMovie) {
+    private addSuggestionToWatchList(movie:IMovie) {
         const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo')!);
         db.getWatchList(userInfo.uid).then(snapshot => {
             if (snapshot.val() != null) {
@@ -229,7 +230,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
                                     {/* TODO BREAK OUT TO OWN COMPONENT */}
                                     <Paper className="searchBar">
                                         <InputBase 
-                                            placeholder="Sök filmtitel"
+                                            placeholder="Sök bland film- och serietips"
                                             onChange={this.handleChange}
                                         />
                                         <IconButton>
@@ -249,13 +250,14 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
                                 <List>
                                     {
                                         Object.entries(filteredMovies).map((x) => {
-                                            var movie = x[1][1] //TODO: Fix this
-                                            return <Movie 
-                                                        key={movie.id} 
-                                                        movie={movie} 
-                                                        addMovieToWatchlist={this.addMovieToWatchList} 
+                                            var suggestionObject = x[1][1] //TODO: Fix this
+                                            return <SuggestionObject 
+                                                        isTvShow={suggestionObject.media_type === 'tv'}
+                                                        key={suggestionObject.id} 
+                                                        suggestion={suggestionObject} 
+                                                        addSuggestionToWatchList={this.addSuggestionToWatchList} 
                                                         handleCommentsClick={this.handleCommentsClick} 
-                                                    />
+                                                    />  
                                         })
                                         .slice(
                                             this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage
@@ -276,7 +278,7 @@ class HomePage extends React.Component<IMoviesProps, IMoviesState > {
                         <Container>
                             <Button className="addMovieSuggestionBtn" onClick={() => this.addNewMovieDialog(true)} color="primary" variant="contained">
                                 <Icon>add_circle</Icon>
-                                 Lägg till filmtips
+                                 Lägg till tips
                             </Button>
                                 <WatchList 
                                     userId={userInfo.uid} 

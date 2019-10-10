@@ -67,10 +67,33 @@ code {
       padding-bottom: 0px !important;
       padding-top: 0px !important;
       padding-right: 55px !important;
+      .stream {
+        float:left;
+        margin-right: 15px;
+      }
+      .category {
+        display: inline-block !important;
+        position: relative;
+        top:5px;
+        margin-right: 5px;
+        .tvTextIcon {
+          position: absolute;
+          font-size: 12px;
+          top: 10%;
+          left: 20%;
+          font-weight: bold;
+        }
+      }
+      .title {
+        display: inline-block !important;
+      }
     }
     .movieOverview {
-      margin-left: 10px;
+      margin-left: 80px;
       text-align: center;
+      background-color: #f7f7f7;
+      padding: 10px;
+      border-radius: 6px;
       .MuiIcon-root {
         font-size: 15px;
         color:gray;
@@ -86,7 +109,6 @@ code {
       .showLess {
         background-color: lightgray !important;
         color:black !important;
-        margin-top: 10px !important;
         width: 30%;
         margin-bottom: 10px !important;
       }
@@ -99,7 +121,7 @@ code {
       text-align: center;
       display: inline-block;
       position: absolute;
-      margin-top:10px;
+      margin-left: 30px;
       .statisticInfo {
         margin-bottom: 10px;
         .first, .second {
@@ -110,8 +132,7 @@ code {
         }
       }
       .MuiIcon-root {
-        font-size: 1.1rem !important;
-        line-height: 1 !important;
+        font-size: 1.4rem !important;
       }
     }
   }
@@ -121,6 +142,9 @@ code {
     display: inline-block;
     padding-left: 10px;
     border: 1px solid lightgray !important;
+    input {
+      width:200px !important;
+    }
   }
   .pagination {
     display: inline-block;
@@ -160,16 +184,17 @@ code {
   margin-top:5px;
 }
 .MuiAvatar-root {
-  border-radius: 0px !important;
   width: 70px !important;
   height: 100px !important;
   margin-right: 10px;
   display: inline-block !important;
+  border-radius: 6px !important;
 }
 
 .userRating {
   z-index: 1;
   font-size: 14px;
+  font-weight: bold;
   position: absolute !important;
   left: 20px !important;
   top: 110px !important;
@@ -180,11 +205,12 @@ code {
     color:gray;
   }
 }
+
 .movieChip {
   height: 18px !important;
   font-size: 0.7rem !important; 
   margin-bottom: 5px;
-  background-color:#d1e3ff !important;
+  background-color:#ebf3ff !important;
   .MuiChip-icon {
     font-size: 1.1rem !important;
   }
@@ -195,7 +221,7 @@ code {
   margin-left: 10px;
   z-index: 1;
   position: absolute !important;
-  top: 10px !important;
+  top: 7% !important;
   .MuiChip-icon {
     font-size: 1.3rem !important;
     margin-left: 0px !important;
@@ -276,6 +302,13 @@ code {
     .suggestionTitle {
       float:left;
     }
+    .suggestionMediaType {
+      margin-left: 5px !important;
+      display: inline-block;
+      .MuiIcon-root {
+        font-size: 1.2rem !important;
+      }
+    }
   }
 }
 
@@ -298,6 +331,16 @@ code {
         padding:5px;
         .addedByUserChip {
           display: none;
+        }
+        .category {
+          top: 5px !important;
+          display: inline-block !important;
+          .tvTextIcon {
+            display: none;
+          }
+        }
+        .title {
+          display: inline-block !important;
         }
       }
     }

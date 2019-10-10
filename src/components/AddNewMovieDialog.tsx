@@ -4,7 +4,7 @@ import { IAddNewDialogProps, IAddNewDialogState, IMovie } from '../types/types';
 import { db } from '../firebase';
 import { userInfo } from 'os';
 import { Paper } from 'material-ui';
-import { Dialog, DialogTitle, DialogContent, Button, DialogActions } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, Button, DialogActions, Icon } from '@material-ui/core';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { format } from 'date-fns';
 import { apiKey, tmdbUrl } from '../constants/keys';
@@ -27,18 +27,20 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
     private onSuggestionsFetchRequested = () => {
         if (this.state.value.length > 1) {
             //Search movies by users input
-            fetch(`${tmdbUrl}/search/movie?${apiKey}&query=${this.state.value}`)
+            fetch(`${tmdbUrl}/search/multi?${apiKey}&query=${this.state.value}`)
             .then(response => response.json())
-            .then(data => this.setState({ suggestions: data.results })) 
+            .then(data => 
+                this.setState({ suggestions: data.results })
+            ) 
         }
     }
     private onSuggestionsClearRequested = () => {
         this.setState({ suggestions: [] });
     }
     private onSuggestionSelected = (event: React.FormEvent<any>, data: Autosuggest.SuggestionSelectedEventData<IMovie>) => {
-
+        
         //Get movie again, but with more details
-        fetch(`${tmdbUrl}/movie/${data.suggestion.id}?${apiKey}`)
+        fetch(`${tmdbUrl}${data.suggestion.media_type === 'tv' ? '/tv/' : '/movie/'}${data.suggestion.id}?${apiKey}`)
         .then(response => response.json())
         .then(data => {
             this.setState({ selection:data })
@@ -49,10 +51,20 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
         movie.addedByUserRating = this.state.userRatingValue;
         movie.addedByUser = this.props.userInfo.username;
         movie.addedByUserDate = new Date(Date.now());
+        movie.media_type = movie.seasons != undefined ? 'tv' : 'movie';
+        movie.title = movie.title != undefined ? movie.title : movie.name;
+        movie.release_date = movie.release_date != undefined ? movie.release_date : movie.first_air_date;
+        movie.homepage = movie.homepage != undefined ? movie.homepage : "";
+        movie.in_production = movie.in_production != undefined ? movie.in_production : false;
+        movie.number_of_episodes = movie.number_of_episodes != undefined ? movie.number_of_episodes : 0;
+        movie.number_of_seasons = movie.number_of_seasons != undefined ? movie.number_of_seasons : 0;
+        movie.status = movie.status != undefined ? movie.status : "";
+        movie.type = movie.type != undefined ? movie.type : "";
+        movie.episode_run_time = movie.episode_run_time != undefined ? movie.episode_run_time : 0;
 
         db.getMovie(this.state.selection.id).then(snapshot => {
             if (snapshot.val() == null) {
-                db.saveMovieSuggestion(this.state.selection, this.state.userRatingValue, this.props.userInfo).then(() => {
+                db.saveMovieSuggestion(movie, this.props.userInfo).then(() => {
                     this.props.addNewMovieDialog(false);
                     this.props.addMovieSuggestion([
                         movie.id.toString(),
@@ -83,15 +95,25 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
     }
     public render() {
         const {value, selection} = this.state;
-        const title = selection ? selection.title : '';
-        const poster = selection ? selection.poster_path : '';
-        const original_language = selection ? selection.original_language : '';
-        const overview = selection ? selection.overview : '';
-        const release_date = selection ? selection.release_date : '';
-        const id = selection ? selection.id : '';
+        var title, poster, original_language, overview, release_date, id;
+
+        if (selection.seasons != undefined) {
+            title = selection ? selection.name : '';
+            release_date = selection ? selection.first_air_date : '';
+        }
+        else { // It's a movie
+            title = selection ? selection.title : '';
+            release_date = selection ? selection.release_date : '';
+        }
+
+        poster = selection ? selection.poster_path : '';
+        original_language = selection ? selection.original_language : '';
+        overview = selection ? selection.overview : '';
+        id = selection ? selection.id : '';
+        
         return <div>
                 <Dialog className="addNewMovieDialog" draggable={true} open={this.props.open} onClose={() => this.handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">Lägg till filmtips</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Lägg till film- eller serietips</DialogTitle>
                     <DialogContent className="dialogContent">
                         <Autosuggest 
                             suggestions={this.state.suggestions}
@@ -101,7 +123,7 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
                             getSuggestionValue={this.getSuggestionValue}
                             renderSuggestion={this.renderSuggestion}
                             inputProps={{
-                                placeholder: `Filmer hämtas från TMDB.org`,
+                                placeholder: `Filmer och serier hämtas från TMDB.org`,
                                 value,
                                 onChange: (e, changeEvent) => this.onChange(e, changeEvent),
                             }}
@@ -121,18 +143,18 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
                                         /> 
                                     </div>
                                     <div className="inputFields">
-                                        <Label>(HIDE THIS) ID</Label><br />
-                                        <Input type="text" name="id" id="movieid" value={id} readOnly/>
+                                        {/* <Label>(HIDE THIS) ID</Label><br />
+                                        <Input type="text" name="id" id="movieid" value={id} readOnly/> */}
                                         <Label>Titel</Label><br />
                                         <Input type="text" name="title" id="movieTitle" value={title} readOnly/>
-                                        <Label>Poster</Label><br />
-                                        <Input type="text" name="poster" id="moviePoster" value={poster} readOnly />
+                                        {/* <Label>Poster</Label><br />
+                                        <Input type="text" name="poster" id="moviePoster" value={poster} readOnly /> */}
+                                        <Label>Utgivningsdatum</Label><br />
+                                        <Input type="text" name="releaseDate" id="movieReleaseDate" value={release_date} readOnly />
                                         <Label>Språk</Label><br />
                                         <Input type="text" name="lang" id="movieLanguage" value={original_language} readOnly />
                                         <Label>Sammanfattning</Label><br />
                                         <Input type="textarea" name="summary" id="movieSummary" value={overview} readOnly />
-                                        <Label>Utgivningsdatum</Label><br />
-                                        <Input type="text" name="releaseDate" id="movieReleaseDate" value={release_date} readOnly />
                                     </div>
                                     <Paper className="image">
                                         <img 
@@ -157,18 +179,22 @@ export class AddNewMovieDialog extends React.Component<IAddNewDialogProps, IAddN
             </div>
     }
     
-    protected getSuggestionValue(suggestion: IMovie): string { return suggestion.title }
+    protected getSuggestionValue(suggestion: IMovie): string { return suggestion.media_type !== 'tv' ? suggestion.title : suggestion.name; }
     protected renderSuggestion(suggestion: IMovie, params: Autosuggest.RenderSuggestionParams) {
+
+        const title = suggestion.media_type !== 'tv' ? suggestion.title : suggestion.name;
+        const date = format(suggestion.release_date != undefined ? suggestion.release_date : suggestion.first_air_date, 'YYYY')
+
         return <div>
                     {
                         suggestion.poster_path != null ? 
-                            <img className="suggestionImage" src={"https://image.tmdb.org/t/p/w92"+suggestion.poster_path} alt={suggestion.title} /> 
+                            <img className="suggestionImage" src={`https://image.tmdb.org/t/p/w92${suggestion.poster_path}`} alt={title} /> 
                             : 
                             <img className="suggestionImage" src="https://via.placeholder.com/35x50?text=X" />
                     }
-                    <div className="suggestionTitle"> {suggestion.title}</div><br />
-                    
-                    <div className="suggestionYear" style={{color:"grey"}}> {format(suggestion.release_date, 'YYYY')}</div>
+                    <div className="suggestionMediaType">{suggestion.media_type === 'tv' ? <Icon>tv</Icon> : <Icon>movie</Icon>}</div>
+                    <div className="suggestionTitle"> {title}</div><br />
+                    <div className="suggestionYear" style={{color:"grey"}}> {date}</div>
                 </div>
     }
 }

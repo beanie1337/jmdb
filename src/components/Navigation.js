@@ -35,7 +35,7 @@ const Navigation = () =>
 const NavigationAuth = () =>
     <Nav className="ml-auto" navbar>
         <NavItem>
-            <NavLink href={routes.HOME}>Startsidan</NavLink>
+            <NavLink href={routes.HOME}>Startsida</NavLink>
         </NavItem>
         <NavItem>
             <NavLink href={routes.ACCOUNT}>Mitt konto</NavLink>

@@ -31,14 +31,14 @@ export class WatchList extends React.Component<IWatchListProps, {}> {
                                                 </IconButton>
                                                 <Tooltip title={x[1].title} placement="top">
                                                     <span>
-                                                        {x[1].title.length > 20 ? `${x[1].title.substring(0, 20)}...` : x[1].title}
+                                                        {x[1].title.length > 25 ? `${x[1].title.substring(0, 25)}...` : x[1].title}
                                                     </span>
                                                 </Tooltip>
                                         </ListItem>
                                 })
                         }
                         </List>
-                    : <ListItem> - Inga filmer hittade</ListItem>
+                    : <ListItem> - Här är det tomt!</ListItem>
                 }
                 
              </>

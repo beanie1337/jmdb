@@ -43,9 +43,10 @@ export interface IMoviesProps {
 }
 
 export interface IMovieProps {
-    movie:IMovie,
-    addMovieToWatchlist:any,
-    handleCommentsClick:any
+    suggestion:IMovie,
+    addSuggestionToWatchList:any,
+    handleCommentsClick:any,
+    isTvShow:boolean
 }
 
 export interface IMovieState {
@@ -54,6 +55,7 @@ export interface IMovieState {
 
 export interface IMovie {
     title:string,
+    name:string,
     addedByUser:string,
     addedByUserDate:Date,
     addedByUserRating:number,
@@ -68,6 +70,7 @@ export interface IMovie {
     popularity:number,
     poster_path:string,
     release_date:string,
+    first_air_date:string,
     revenue:number,
     runtime:number,
     tagline:string,
@@ -75,7 +78,17 @@ export interface IMovie {
     vote_average:number,
     vote_count:number,
     movieCommentsCount:number
-    [key:number]:IMovie
+    [key:number]:IMovie,
+    media_type:string,
+    stream:string,
+    seasons:number,
+    homepage:string,
+    in_production:boolean,
+    number_of_episodes:number,
+    number_of_seasons:number,
+    status:string,
+    type:string,
+    episode_run_time:number
 }
 
 export interface IOverviewProps {
@@ -139,4 +152,8 @@ export interface IMovieToolsProps {
     movie: IMovie,
     addMovieToWatchList: any,
     handleCommentsClick:any
+}
+
+export interface IStreamProps {
+    suggestion: IMovie
 }

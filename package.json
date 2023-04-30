@@ -20,7 +20,7 @@
     "jquery-autocomplete": "^1.2.8",
     "material-ui": "^0.20.2",
     "node-sass": "^4.12.0",
-    "npm": "^6.11.2",
+    "npm": "^9.6.5",
     "react": "^16.8.6",
     "react-autosuggest": "^9.4.2",
     "react-dom": "^16.8.6",
